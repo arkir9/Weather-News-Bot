@@ -7,7 +7,7 @@ import time
 
 from weather import get_weather
 from news import get_news
-
+from telegram.helpers import escape_markdown
 
 load_dotenv()
 BOT_TOKEN = os.getenv("Telegram_Token")
@@ -18,8 +18,9 @@ def format_weather_data(data, city):
     if data:
         temperature = data["current_observation"]["condition"]["temperature"]
         humidity = data["current_observation"]["atmosphere"]["humidity"]
-        description = data["current_observation"]["condition"]["text"]
+        description = escape_markdown(data["current_observation"]["condition"]["text"])
         wind_speed = data["current_observation"]["wind"]["speed"]
+        city = escape_markdown(city)
         return (
             f"**Weather in {city}**\n"
             f"Temperature: {temperature}°F\n"
@@ -33,10 +34,10 @@ def format_weather_data(data, city):
 def format_forecast_data(data):
     forecast_response = "\n**3-Day Forecast:**\n"
     for index, forecast in enumerate(data["forecasts"][:3]):  # 3-day forecast
-        day = forecast["day"]
+        day = escape_markdown(forecast["day"])
         high = forecast["high"]
         low = forecast["low"]
-        forecast_text = forecast["text"]
+        forecast_text = escape_markdown(forecast["text"])
         forecast_response += (
             f"{index + 1}. {day}: High of {high}°F, Low of {low}°F, {forecast_text}\n"
         )
@@ -48,9 +49,9 @@ def format_news_data(data):
     if data and isinstance(data, list):  
         response = "**Top News Articles:**\n"
         for article in data[:5]:  # at least 5
-            title = article.get("title", "No title")
+            title = escape_markdown(article.get("title", "No title"))
             url = article.get("url", "No URL")
-            excerpt = article.get("excerpt", "No description")
+            excerpt = escape_markdown(article.get("excerpt", "No description"))
             response += f"\n**Title**: {title}\n**Link**: {url}\n**Description**: {excerpt}\n"
         return response
     return "No news data available."
@@ -71,7 +72,7 @@ async def weather_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         weather_message = format_weather_data(weather_data, city)
 
-        await update.message.reply_text(weather_message, parse_mode="Markdown")
+        await update.message.reply_text(weather_message, parse_mode="markdown")
 
         keyboard = [
             [
@@ -141,7 +142,7 @@ async def news_command(update: Update, context: ContextTypes):
                 # print(f"Debug: Formatted response: {response}")  
                 await update.message.reply_text(response, parse_mode="markdown")
             else:
-                await update.message.reply_text("No news articles found for this topic.")
+                await update.message.reply_text("No news articles found for this topic.", parse_mode = 'markdown')
         except Exception as e:
             await update.message.reply_text(f"An error occurred: {str(e)}")
     else:
