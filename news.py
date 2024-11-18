@@ -74,7 +74,7 @@ def get_news(categories=None):
         print("Unexpected data format received.")
 
 
-# topics = get_topics()
-# print(topics)
+topics = get_topics()
+print(topics)
 
 get_news('Sports')

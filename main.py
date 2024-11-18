@@ -71,7 +71,7 @@ async def weather_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         weather_message = format_weather_data(weather_data, city)
 
-        await update.message.reply_text(weather_message)
+        await update.message.reply_text(weather_message, parse_mode="Markdown")
 
         keyboard = [
             [
@@ -100,11 +100,11 @@ async def handle_forecast_response(update: Update, context: ContextTypes.DEFAULT
 
         forecast_message = format_forecast_data(weather_data)
         await query.answer()
-        await query.edit_message_text(forecast_message)
+        await query.edit_message_text(forecast_message, parse_mode="markdown")
 
     elif query.data == "no_forecast":
         # await query.answer()
-        await query.edit_message_text("You chose not to see the forecast.")
+        await query.edit_message_text("You chose not to see the forecast.", parse_mode="markdown")
 
 
 
@@ -139,7 +139,7 @@ async def news_command(update: Update, context: ContextTypes):
             if news_data:  
                 response = format_news_data(news_data)
                 # print(f"Debug: Formatted response: {response}")  
-                await update.message.reply_text(response)
+                await update.message.reply_text(response, parse_mode="markdown")
             else:
                 await update.message.reply_text("No news articles found for this topic.")
         except Exception as e:
