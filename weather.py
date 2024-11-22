@@ -1,6 +1,5 @@
 import requests
 
-
 def get_weather(city=None):
     if not city:
         city = input("Enter the name of the city: ")
@@ -13,6 +12,7 @@ def get_weather(city=None):
     }
     response = requests.get(url, headers=headers, params=querystring)
     data = response.json()
+    # print(data)
 
     if response.status_code != 200:
         print("Error:", response.status_code, response.text)
@@ -44,8 +44,7 @@ def get_weather(city=None):
 
     except KeyError:
         print("Could not find weather data.")
-
+    
     return data
-
 
 get_weather("Nairobi")
